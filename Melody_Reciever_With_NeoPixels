@@ -1,19 +1,19 @@
 // Test Messages
 input.onGesture(Gesture.Shake, function () {
     msg = "M1"
-    processMessage2()
+    processMessage()
 })
 input.onButtonPressed(Button.A, function () {
-    createRandomMessage2()
-    processMessage2()
+    createRandomMessage()
+    processMessage()
 })
 input.onButtonPressed(Button.B, function () {
-    createRandomMessage2()
+    createRandomMessage()
     radio.sendString("" + msg)
 })
 input.onButtonPressed(Button.AB, function () {
     msg = "M."
-    processMessage2()
+    processMessage()
 })
 
 
@@ -22,7 +22,7 @@ radio.onReceivedString(function (receivedString) {
     // Tells you when it is recieving messages
     led.toggle(0, 0)
     msg = receivedString
-    processMessage2()
+    processMessage()
 })
 
 
@@ -67,7 +67,7 @@ function playNoteFromNoteNumberAndChord(NoteNum: number, chordIxs: number[]) {
     }
 }
 // Checks what chord is being set by the Harmony Glove
-function check_chord2() {
+function check_chord() {
     if (msg.charAt(1) == "C") {
         Active_Chord = CMaj
         basic.clearScreen()
@@ -83,9 +83,9 @@ function check_chord2() {
     }
 }
 // Processes the Message and Plays a note
-function processMessage2() {
+function processMessage() {
     if (msg.charAt(0) == "H") {
-        check_chord2()
+        check_chord()
     } else {
         if (msg == "M.") {
             strip.showColor(NeoPixelColors.Black)
@@ -108,7 +108,7 @@ function processMessage2() {
         }
     }
 }
-function createRandomMessage2() {
+function createRandomMessage() {
     msg = testMessages[Math.randomRange(0, testMessages.length - 1)]
 }
 
