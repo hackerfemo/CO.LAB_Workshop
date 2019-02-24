@@ -1,36 +1,53 @@
-let testMessages1: string[] = []
-let NeoPixelColors2: number[] = []
-let NoteChar = ""
-let testMessages: string[] = []
-let Active_Chord: number[] = []
-let msg = ""
 // Test Messages
 input.onGesture(Gesture.Shake, function () {
     msg = "M1"
-    processMessage22()
+    processMessage()
 })
 input.onButtonPressed(Button.A, function () {
-    createRandomMessage22()
-    processMessage22()
+    createRandomMessage()
+    processMessage()
 })
 input.onButtonPressed(Button.B, function () {
-    createRandomMessage22()
+    createRandomMessage()
     radio.sendString("" + msg)
 })
-function createRandomMessage22() {
-    msg = testMessages[Math.randomRange(0, testMessages.length - 1)]
-}
+input.onButtonPressed(Button.AB, function () {
+    msg = "M."
+    processMessage()
+})
+
+
 // When Recieve Radio Message
 radio.onReceivedString(function (receivedString) {
     // Tells you when it is recieving messages
     led.toggle(0, 0)
     msg = receivedString
-    processMessage22()
+    processMessage()
 })
+
+
+// Playing note from Message sent and chord set
+function playNoteFromNoteNumberAndChord(NoteNum: number, chordIxs: number[]) {
+    if (NoteNum > (chordIxs.length) - 1) {
+        music.rest(5)
+    } else {
+        let FsIx = chordIxs[NoteNum]
+        music.ringTone(noteFs[FsIx])
+    }
+}
+// Pro Mode - Plays note from the Note Name
+function getFrequencyForNoteName(noteName: '') {
+    index = noteName.charCodeAt(0) - 65
+    return noteFs[index]
+}
+//Creates Random Message
+function createRandomMessage() {
+    msg = testMessages[Math.randomRange(0, testMessages.length - 1)]
+}
 // Processes the Message and Plays a note
-function processMessage22() {
+function processMessage() {
     if (msg.charAt(0) == "H") {
-        check_chord22()
+        check_chord()
     } else {
         if (msg == "m.") {
             strip.showColor(NeoPixelColors.Black)
@@ -41,7 +58,7 @@ function processMessage22() {
             NoteNum = NoteNum - 1
             NoteNum = NoteNum / 2
             NeoPixels(NoteNum)
-if (Active_Chord == CMaj) {
+            if (Active_Chord == CMaj) {
                 playNoteFromNoteNumberAndChord(NoteNum, CMaj)
             } else if (Active_Chord == G7Maj) {
                 playNoteFromNoteNumberAndChord(NoteNum, G7Maj)
@@ -54,7 +71,7 @@ if (Active_Chord == CMaj) {
     }
 }
 // Checks what chord is being set by the Harmony Glove
-function check_chord22() {
+function check_chord() {
     if (msg.charAt(1) == "C") {
         Active_Chord = CMaj
         basic.clearScreen()
@@ -69,46 +86,41 @@ function check_chord22() {
         led.plot(4, 2)
     }
 }
-input.onButtonPressed(Button.AB, function () {
-    msg = "M."
-    processMessage22()
-})
-let strip: neopixel.Strip = null
+function NeoPixels(index: number) {
+    strip.showColor(neopixel.colors(MyNeoPixelColors[index]))
+}
+
+
 let NoteNum = 0
 let noteFs: number[] = []
 let index = 0
 let CMaj: number[] = []
 let G7Maj: number[] = []
 let FMaj: number[] = []
-// Playing note from Message sent and chord set
-function playNoteFromNoteNumberAndChord(NoteNum: number, chordIxs: number[]) {
-    if (NoteNum > (chordIxs.length) - 1) {
-        music.rest(5)
-    } else {
-        let FsIx = chordIxs[NoteNum]
-        music.ringTone(noteFs[FsIx])
-    }
-}
+let testMessages2: string[] = []
+let MyNeoPixelColors: number[] = []
+let NoteChar = ""
+let testMessages: string[] = []
+let Active_Chord: number[] = []
+let msg = ""
+// Frequency and Test array setups
+testMessages = ["m1", "m3", "m5", "m7", "m."]
+testMessages2 = ["m1", "m3", "m5", "m7", "m.", "HC", "HG", "HF"]
+noteFs = [440, 494, 262, 294, 330, 349, 392]
 // setting up chord arrays
 CMaj = [2, 4, 6]
 G7Maj = [6, 1, 3, 5]
 FMaj = [5, 0, 1]
 Active_Chord = CMaj
-// Pro Mode - Plays note from the Note Name
-function getFrequencyForNoteName(noteName: '') {
-    index = noteName.charCodeAt(0) - 65
-    return noteFs[index]
-}
-NeoPixelColors2 = [neopixel.colors(NeoPixelColors.Red), neopixel.colors(NeoPixelColors.Green), neopixel.colors(NeoPixelColors.Blue), neopixel.colors(NeoPixelColors.Orange), neopixel.colors(NeoPixelColors.Purple)]
+
+
+//NeoPixel SetUp
+let strip: neopixel.Strip = null
+MyNeoPixelColors = [neopixel.colors(NeoPixelColors.Red), neopixel.colors(NeoPixelColors.Green), neopixel.rgb(155, 155, 255), neopixel.colors(NeoPixelColors.Yellow), neopixel.colors(NeoPixelColors.Purple)]
 strip = neopixel.create(DigitalPin.P1, 5, NeoPixelMode.RGB)
 strip.showColor(neopixel.colors(NeoPixelColors.Black))
-function NeoPixels(index: number) {
-    strip.showColor(neopixel.colors(NeoPixelColors2[index]))
-}
-// Frequency and Test array setups
-testMessages = ["M1", "M3", "M5", "M7", "M."]
-testMessages1 = ["M1", "M3", "M5", "M7", "M.", "HC", "HG", "HF"]
-noteFs = [440, 494, 262, 294, 330, 349, 392]
+
+
 // Radio Setup
 if (input.buttonIsPressed(Button.A)) {
     radio.setGroup(42)
