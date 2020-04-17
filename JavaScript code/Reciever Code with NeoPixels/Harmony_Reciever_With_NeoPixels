@@ -1,0 +1,83 @@
+// When Recieve Radio Message
+radio.onReceivedString(function (receivedString) {
+
+    // Tells you when it is recieving messages
+    led.toggle(0, 0)
+    msg = receivedString
+    processMessage()
+})
+
+
+//Tests on Button A, B and A+B
+input.onButtonPressed(Button.A, function () {
+    msg = "HC"
+    processMessage()
+})
+input.onButtonPressed(Button.B, function () {
+    msg = "HG"
+    processMessage()
+})
+input.onButtonPressed(Button.AB, function () {
+    msg = "HF"
+    processMessage()
+})
+
+
+// Processes the Message and Plays a note
+function processMessage() {
+    if (msg.charAt(0) == "H") {
+        let FToBePlayed = getFrequencyForNoteName(msg.charAt(1))
+        NeoPixels(NeoPixelOptions[index-2])
+        music.ringTone(FToBePlayed)
+    } else if (msg == "H.") {
+        music.rest(5)
+    }
+}
+// Pro Mode - Plays note from the Note Name
+function getFrequencyForNoteName(noteName: string) {
+    index = noteName.charCodeAt(0) - 65
+    return noteFs[index]
+}
+//Controls what color the NeoPixels show
+function NeoPixels(index: number) {
+    strip.showColor(neopixel.colors(NeoPixelColours[index]))
+}
+
+//Setting Variables
+let noteFs: number[] = []
+let index = 0
+let msg = ""
+//Making sure NeoPixels can only be Red Green or Blue
+let NeoPixelOutput = 0
+let NeoPixelOptions: number[] = [0, 0, 0, 1, 2]
+
+//NeoPixel SetUp
+let strip: neopixel.Strip = null
+strip = neopixel.create(DigitalPin.P1, 5, NeoPixelMode.RGB)
+let NeoPixelColours: number[] = []
+//You can change color of NeoPixels by altering what number you reference in this array
+NeoPixelColours = [neopixel.colors(NeoPixelColors.Red), neopixel.colors(NeoPixelColors.Green), neopixel.rgb(155, 155, 255), neopixel.colors(NeoPixelColors.Yellow), neopixel.colors(NeoPixelColors.Purple)]
+strip.setBrightness(255)
+strip.showColor(neopixel.colors(NeoPixelColors.Black))
+// Frequency and Test array setups
+noteFs = [220, 247, 131, 147, 165, 175, 196]
+
+
+// Radio Setup
+if (input.buttonIsPressed(Button.A)) {
+    radio.setGroup(42)
+    basic.showNumber(42)
+} else if (input.buttonIsPressed(Button.B)) {
+    radio.setGroup(43)
+    basic.showNumber(43)
+} else {
+    radio.setGroup(41)
+    basic.showNumber(41)
+}
+basic.showLeds(`
+    . . . # #
+    # . . # .
+    # . . # .
+    # # # . .
+    # . # . .
+    `)

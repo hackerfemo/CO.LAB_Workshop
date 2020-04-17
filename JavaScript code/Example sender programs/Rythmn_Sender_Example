@@ -1,0 +1,33 @@
+radio.setGroup(41)
+basic.showLeds(`
+    # # . . .
+    # . . . #
+    # . . # .
+    . . . . #
+    . . . # .
+    `)
+// Radio Setup
+if (input.buttonIsPressed(Button.A)) {
+    radio.setGroup(42)
+    basic.showNumber(42)
+} else if (input.buttonIsPressed(Button.B)) {
+    radio.setGroup(43)
+    basic.showNumber(43)
+} else {
+    radio.setGroup(41)
+    basic.showNumber(41)
+}
+basic.forever(function () {
+    // If tilted right
+    if (input.acceleration(Dimension.X) > 300) {
+        radio.sendString("R4")
+    } else if (input.acceleration(Dimension.X) < -300) {
+        radio.sendString("R2")
+    } else if (input.acceleration(Dimension.Y) > 300) {
+        radio.sendString("R1")
+    } else if (input.acceleration(Dimension.Y) < -300) {
+        radio.sendString("R3")
+    } else if (input.acceleration(Dimension.X) > -300 && input.acceleration(Dimension.X) < 300 && (input.acceleration(Dimension.Y) > -300 && input.acceleration(Dimension.Y) < 300)) {
+        radio.sendString("R.")
+    }
+})
