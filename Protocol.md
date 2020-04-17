@@ -1,6 +1,7 @@
 # Musical glove protocol
 
 ## Radio groups
+## If you have multiple boxes then you will need teams - otherwise it is only necessary to use 1
 
 team 1: radio group = 41
 
@@ -22,6 +23,7 @@ R - Rhythm
     RF play from FMaj
     (RP ProMode - play any note)
     
+# A, B, D & E are in brackets as they are not used in the example sender code
 H - Harmony
     H. stop
       (HA play A)
@@ -38,13 +40,22 @@ M - Melody  (1 3 5 7 .)
     M3 play 3rd interval node in selected chord
     M5 play 5th interval note in selected chord
     M7 play 7th interval note in selected chord
+    
+m - Lower Melody  (1 3 5 7 .)
+    m. stop
+    m1 play 1st interval note in selected chord
+    m3 play 3rd interval node in selected chord
+    m5 play 5th interval note in selected chord
+    m7 play 7th interval note in selected chord
 ```
 
 The rhythm receiver will play a short note in given chord
 
 The harmony receiver will play the harmony note
 
-The melody receiver will also select chord from the H message.
+The melody receiver will select a note from the chord provided by the H message
+
+The lower melody reciever will also select a note from the chord provided by the H message but will play it in a lower octave
 
 ##NOTES
 
